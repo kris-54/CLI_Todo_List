@@ -25,13 +25,35 @@
     }
 }
 
+function sort_menu($items) 
+{
+    echo '(A)-Z,(Z)-A,(O)rder Entered, (R)everse Order Entered : ';
+    $input = get_input(true);
+    switch ($input) {
+        case 'A':
+            asort($items);
+            break;
+        case 'Z':
+            arsort($items);
+            break;
+        case 'O':
+            ksort($items);
+            break;
+        case 'R':
+            krsort($items);
+            break;
+    } return ($items);
+}
+
+
+
  // The loop!
  do {
      // Echo the list produced by the function
      echo list_items($items);
 
      // Show the menu options
-     echo '(N)ew item, (R)emove item, (Q)uit : ';
+     echo '(N)ew item, (R)emove item, (S)ort, (Q)uit : ';
 
      // Get the input from user
      // Use trim() to remove whitespace and newlines
@@ -52,6 +74,9 @@
          // Remove from array
          unset($items[$key]);
          $items = array_values($items);
+     } elseif ($input == 'S') {
+         //call sort function        
+         $items = sort_menu($items);
      }
  // Exit when input is (Q)uit
  } while ($input != 'Q');
