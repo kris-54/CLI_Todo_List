@@ -7,6 +7,7 @@
  function list_items($list)
  {
     $new_list = ' ';
+    // var_dump($list);
     foreach ($list as $key => $item) {
         $new_list .= ($key + 1) . " {$item}\n";
     }
@@ -42,7 +43,8 @@ function sort_menu($items)
         case 'R':
             krsort($items);
             break;
-    } return ($items);
+    } 
+    return $items;
 }
 
 
@@ -63,8 +65,15 @@ function sort_menu($items)
      if ($input == 'N') {
          // Ask for entry
          echo 'Enter item: ';
-         // Add entry to list array
-         $items[] = get_input();
+         $new_item = get_input();
+         echo 'Would you like to add to the (B)eginning or (E)nd of list' . PHP_EOL;
+        
+         $input = get_input(TRUE);
+            if ($input == 'B') {
+                array_unshift($items, $new_item);
+            } else {
+                array_push($items, $new_item);
+                }
      } elseif ($input == 'R') {
          // Remove which item?
          echo 'Enter item number to remove: ';
@@ -77,6 +86,10 @@ function sort_menu($items)
      } elseif ($input == 'S') {
          //call sort function        
          $items = sort_menu($items);
+     } elseif ($input == 'F') {
+        array_shift($items);
+     } elseif ($input == 'L') {
+        array_pop($items);
      }
  // Exit when input is (Q)uit
  } while ($input != 'Q');
