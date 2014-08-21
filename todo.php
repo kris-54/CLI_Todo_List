@@ -47,6 +47,17 @@ function sort_menu($items)
     return $items;
 }
 
+function read_file($filename)
+{
+    $handle = fopen($filename,'r');
+    //pass in the file to open
+    $content = trim(fread($handle, filesize($filename)));
+    //content is the the file and file size
+    fclose($handle);
+    //close the file once rendered
+    return $content;
+}
+
 
 
  // The loop!
@@ -55,7 +66,7 @@ function sort_menu($items)
      echo list_items($items);
 
      // Show the menu options
-     echo '(N)ew item, (R)emove item, (S)ort, (Q)uit : ';
+     echo '(N)ew item, (R)emove item, (S)ort, (O)pen File (Q)uit : ';
 
      // Get the input from user
      // Use trim() to remove whitespace and newlines
@@ -79,17 +90,33 @@ function sort_menu($items)
          echo 'Enter item number to remove: ';
          // Get array key
          $key = get_input();
-         $key = $key - 1;
          // Remove from array
+         $key = $key - 1;
          unset($items[$key]);
          $items = array_values($items);
      } elseif ($input == 'S') {
          //call sort function        
          $items = sort_menu($items);
      } elseif ($input == 'F') {
+        //remove first item on list
         array_shift($items);
      } elseif ($input == 'L') {
+        //removes last item on list
         array_pop($items);
+     } elseif ($input == 'O') {
+        echo "enter file path: ";
+        //ask user for file path
+        $filename = get_input();
+        //the user's input = the file name for the function//
+        $content = read_file($filename);
+        //call the function to reaad the users input and that equals the content//
+        $content = explode("\n", $content);
+        //content is a string so explode to return an array//
+        // $items = $content if this is done without merge lists will not combine
+        $items = array_merge($items,$content);
+        //use array merge to combine the file(content) with newly added items//
+        //use $items = to render the list//
+        
      }
  // Exit when input is (Q)uit
  } while ($input != 'Q');
