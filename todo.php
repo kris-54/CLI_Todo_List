@@ -6,7 +6,7 @@
  // List array items formatted for CLI
  function list_items($list)
  {
-    $new_list = ' ';
+    $new_list = '';
     // var_dump($list);
     foreach ($list as $key => $item) {
         $new_list .= ($key + 1) . " {$item}\n";
@@ -53,11 +53,23 @@ function read_file($filename)
     //pass in the file to open
     $content = trim(fread($handle, filesize($filename)));
     //content is the the file and file size
+    $content = explode("\n", $content);
+    //content is a string so explode to return an array//
+    // $items = $content if this is done without merge lists will not combine
     fclose($handle);
     //close the file once rendered
     return $content;
 }
 
+function save_file($filename,$items)
+{
+    $handle = fopen($filename, 'w');
+        foreach($items as $item) {
+            fwrite($handle,$item . PHP_EOL);
+        }    
+    fclose($handle);
+    
+}
 
 
  // The loop!
@@ -66,7 +78,7 @@ function read_file($filename)
      echo list_items($items);
 
      // Show the menu options
-     echo '(N)ew item, (R)emove item, (S)ort, (O)pen File (Q)uit : ';
+     echo '(N)ew item, (R)emove item, (S)ort, s(A)ve file (O)pen File (Q)uit : ';
 
      // Get the input from user
      // Use trim() to remove whitespace and newlines
@@ -110,14 +122,26 @@ function read_file($filename)
         //the user's input = the file name for the function//
         $content = read_file($filename);
         //call the function to reaad the users input and that equals the content//
-        $content = explode("\n", $content);
-        //content is a string so explode to return an array//
-        // $items = $content if this is done without merge lists will not combine
         $items = array_merge($items,$content);
         //use array merge to combine the file(content) with newly added items//
-        //use $items = to render the list//
-        
-     }
+        //use $items = to render the list//        
+     } elseif ($input == 'A')
+      {
+        echo "enter file path to save: ";
+        $filename = get_input();
+        if (file_exists($filename)) {
+            echo "File ALREADY EXISTS, do you want to proceed? 'Y' or 'N'" . PHP_EOL;
+            $choice = get_input(true); 
+            if ($choice === 'Y') {
+                save_file($filename, $items);
+            } else {
+                echo 'save aborted' . PHP_EOL;
+            }   
+        } else {
+            save_file($filename,$items);
+        }
+     }   
+
  // Exit when input is (Q)uit
  } while ($input != 'Q');
 
@@ -126,3 +150,4 @@ function read_file($filename)
 
  // Exit with 0 errors
  exit(0);
+ ?>
